@@ -1,6 +1,1 @@
-{
-"name":"smileybot",
-"version":"1.0.0",
-"description":"a bot thats all smiles",
-"type":"module"
-}
+{"name":"smileybot","version":"1.0.0","description":"a bot thats all smiles","type":"module","dependencies":{"puppeteer":"^24.15.0"}}
