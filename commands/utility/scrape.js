@@ -1,6 +1,6 @@
 import {scrapeData} from  '../../puppetscrape.js'
 
-import { ActionRowBuilder, MessageFlags, SlashCommandBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, MessageFlags, SlashCommandBuilder } from "discord.js";
 
 export const data = new SlashCommandBuilder()
     .setName("scrape")
@@ -11,14 +11,23 @@ export const data = new SlashCommandBuilder()
             .setRequired(true)
     )
 
+const scrapeRow = new ActionRowBuilder()
+    .addComponents(
+        new ButtonBuilder()
+            .setCustomId('Snapshot')
+            .setLabel('Take Snapshot')
+            .setStyle('Primary')
+    )
+
 export async function execute(interaction) {
     await interaction.deferReply({flags: MessageFlags.EPHEMERAL});
     const url = interaction.options.getString('url');
     
     try{
         const scraped = await scrapeData(url);
+        console.log(scraped)
         if(scraped){
-            await interaction.editReply(scraped);
+            await interaction.editReply({content: scraped.title, components: [scrapeRow]});
         }else{
             await interaction.editReply('an error occured')
         }

@@ -5,5 +5,5 @@ export const data = new SlashCommandBuilder()
     .setDescription("Replies with information about the bot.");
 
 export async function execute(interaction) {
-    await interaction.reply(`smileybot\nVersion: 1.0.0\nDescription: a bot that's all smiles`);
+    await interaction.reply(`scraperhog\nVersion: 1.0.0\nDescription: scrape websites and access data from the comfort of discord`);
 }
