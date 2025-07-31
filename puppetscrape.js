@@ -3,6 +3,7 @@ import puppeteer from 'puppeteer-extra';
 //should not be used maliciously
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 puppeteer.use(StealthPlugin());
+
 export const scrapeData = async (pageurl) => {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();

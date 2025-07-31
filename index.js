@@ -18,6 +18,7 @@ const client = new Client({
 });
 
 client.commands = new Collection()
+client.buttons = new Collection();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -43,6 +44,23 @@ for(const folder of commandFolders) {
         }
 }
 }
+
+//register button handlers, since we dont want them to show up as regular commands
+const buttonsPath  = path.join(__dirname, 'buttons');
+  if (fs.existsSync(buttonsPath)) {
+        const buttonFiles = fs.readdirSync(buttonsPath).filter(file => file.endsWith('.js'));
+        for (const file of buttonFiles) {
+            const filePath = path.join(buttonsPath, file);
+            const fileUrl = pathToFileURL(filePath);
+            const buttonHandler = await import(fileUrl);
+            if ('data' in buttonHandler && 'execute' in buttonHandler) {
+                client.buttons.set(buttonHandler.data.customId, buttonHandler);
+            } else {
+                console.log(`The button handler at ${filePath} is missing a required "data" or "execute" property.`);
+            }
+        }
+    }
+
 
 
 const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
@@ -71,10 +89,26 @@ client.login(process.env.DISCORD_TOKEN)
 })();
 
 client.on('interactionCreate', async interaction => {
+    if(interaction.isButton()) {
+        const buttonHandler = client.buttons.get(interaction.customId.split('|')[0])
+        console.log(interaction.customId.split('|')[0])
+        if(!buttonHandler){
+            console.error('no button handler found')
+            return
+        }
+        try {
+            await buttonHandler.execute(interaction);
+
+        }catch(error) {
+            console.error('Error handling button interaction:', error);
+            await interaction.reply({ content: 'There was an error while executing this button!', ephemeral: true });
+        }
+    }else{
     const command = client.commands.get(interaction.commandName);
     try{
      await command.execute(interaction);   
     }catch(error) {
         console.error('Error handling interaction:', error);
     }
+}
 })
