@@ -26,7 +26,7 @@ export async function execute(interaction) {
             const scrapeRow = new ActionRowBuilder()
                 .addComponents(
                     new ButtonBuilder()
-                        .setCustomId('Snapshot')
+                        .setCustomId(`Snapshot|${scrapedurl}`)
                         .setLabel('Take Snapshot')
                         .setStyle('Primary'),
                     new ButtonBuilder()
