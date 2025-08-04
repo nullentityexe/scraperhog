@@ -28,7 +28,7 @@ export async function execute(interaction){
 const scrapeDataURLS = async (pageurl) => {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
-    await page.goto(pageurl);
+    await page.goto(pageurl, {waitUntil: 'networkidle0'});
 
     const urls = await page.evaluate(() => {
         return Array.from(document.querySelectorAll('a')).map(anchor => anchor.href);
